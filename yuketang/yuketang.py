@@ -25,22 +25,23 @@ class yuketang:
         self.presentation=""
         self.problemid=""
         self.problems={}
+
+        self.debug=True
+        self.wx=False
+        self.msgmgr=MsgManager(debug=self.debug,wx=self.wx)
         self.getcookie()
 
     def getcookie(self):
         if not os.path.exists(self.cookie_filename):
-            print(f"正在第一次获取登录{self.name} cookie，请注意扫码")
-            send2wechat(f"正在第一次获取登录{self.name} cookie，请注意扫码",self.name)
+            self.msgmgr.sendMsg(f"正在第一次获取登录{self.name} cookie，请注意扫码",self.name)
             self.ws_controller(self.ws_login)
         with open(self.cookie_filename,"r")as f:
             self.cookie=f.read()
         if not self.check_cookie():
-            print(f"{self.name} cookie已经失效，正在更新，请注意扫码")
-            send2wechat("cookie已失效，请重新扫码",self.name)
+            self.msgmgr.sendMsg("cookie已失效，请重新扫码",self.name)
             self.ws_controller(self.ws_login)
         else:
-            print(f"{self.name} cookie有效")
-            send2wechat(f"{self.name} cookie有效",self.name)
+            self.msgmgr.sendMsg(f"{self.name} cookie有效",self.name)
 
     def weblogin(self,UserID,Auth):
         url="https://www.yuketang.cn/pc/web_login"
@@ -128,7 +129,7 @@ class yuketang:
         for slide in slides:
             if slide.get("problem") is not None:
                 self.problems[slide['id']]=slide['problem']
-        send2wechat("成功获取幻灯片",user=self.name)
+        self.msgmgr.sendMsg("成功获取幻灯片",user=self.name)
         # print(self.problems)
         
 
@@ -149,7 +150,7 @@ class yuketang:
         }
         res=requests.post(url=url,headers=headers,json=data)
         self.setAuthorization(res)
-        send2wechat(json.dumps(data),self.name)
+        self.msgmgr.sendMsg(json.dumps(data),self.name)
 
 
 
@@ -223,7 +224,7 @@ class yuketang:
                     time.sleep(randint(10,20))
                     self.answer()
                 elif op=="lessonfinished":
-                    send2wechat("课程结束了",user=self.name)
+                    self.msgmgr.sendMsg("课程结束了",user=self.name)
                     break
 
                 

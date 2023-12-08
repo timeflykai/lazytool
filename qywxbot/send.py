@@ -10,6 +10,18 @@ Secret = 'xxxxx'
 CompanyId = 'xxxxx'
 
 
+
+class MsgManager:
+    def __init__(self,debug=False,wx=True) -> None:
+        self.debug=debug
+        self.wx=wx
+
+    def sendMsg(self,msg="this is a test msg",user=None):
+        if self.debug:
+            print(f"发送给{user}的消息: {msg}")
+        if self.wx and user is not None:
+            send2wechat(msg,user)
+
 def get_token():
     global ACCESS_TOKEN
     # 通行密钥
