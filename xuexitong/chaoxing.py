@@ -8,13 +8,8 @@ class chaoxing:
         self.phone=config.get("phone")
         self.password=config.get("password")
         self.uid=""
-<<<<<<< HEAD
         self.courseId="xxx"
         self.classId="xxx"
-=======
-        self.courseId="236076169"
-        self.classId="80049533"
->>>>>>> a16bdffd3fa4594f33bb92084373a6f73090c1ce
         self.longitude=config.get("longitude")
         self.latitude=config.get("latitude")
         self.address=config.get("address")
