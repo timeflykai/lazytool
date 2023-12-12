@@ -30,6 +30,8 @@ class yuketang:
         self.wx=False
         self.msgmgr=MsgManager(debug=self.debug,wx=self.wx)
         self.getcookie()
+        self.start_time=time.time()
+        self.slides=""
 
     def getcookie(self):
         if not os.path.exists(self.cookie_filename):
@@ -129,7 +131,9 @@ class yuketang:
         for slide in slides:
             if slide.get("problem") is not None:
                 self.problems[slide['id']]=slide['problem']
-        self.msgmgr.sendMsg("成功获取幻灯片",user=self.name)
+        if slides!=self.slides:
+            self.slides=slides
+            self.msgmgr.sendMsg("成功获取幻灯片",user=self.name)
         # print(self.problems)
         
 
@@ -158,7 +162,7 @@ class yuketang:
     def ws_controller(self,func,loop=None):
         if loop is None:
             loop=asyncio.get_event_loop()
-        while 1:
+        while True and time.time()-self.start_time<6000:
             try:
                 loop.run_until_complete(func())
                 break
@@ -208,7 +212,7 @@ class yuketang:
             flag=1
             await websocket.send(json.dumps(hello_message))
 
-            while True:
+            while True and time.time()-self.start_time<6000:
                 server_response = await recv_json(websocket)
                 op=server_response['op']
                 if op=="showpresentation" or op=="presentationupdated" or op=="presentationcreated":
